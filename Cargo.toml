@@ -1,0 +1,19 @@
+[package]
+name = "Sentry"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+anyhow = "1.0.102"
+axum = "0.8.9"
+chrono = { version = "0.4.44", features = ["serde"] }
+dotenvy = "0.15.7"
+rumqttc = "0.25.1"
+serde = { version = "1.0.228", features = ["derive"] }
+serde_json = "1.0.149"
+sqlx = { version = "0.8.6", features = ["runtime-tokio-rustls", "postgres", "uuid", "chrono"] }
+thiserror = "2.0.18"
+tokio = { version = "1.52.1", features = ["full"] }
+tracing = "0.1.44"
+tracing-subscriber = "0.3.23"
+uuid = { version = "1.23.1", features = ["v4", "serde"] }

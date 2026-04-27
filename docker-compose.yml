@@ -1,0 +1,23 @@
+version: "3.8"
+
+services:
+  broker:
+    image: eclipse-mosquitto:2
+    container_name: mqtt-broker
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - ./mosquitto/config:/mosquitto/config
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:15
+    container_name: sentry-db
+    environment: 
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: sentry
+    ports:
+    - "5432:5432"
+    restart: unless-stopped
