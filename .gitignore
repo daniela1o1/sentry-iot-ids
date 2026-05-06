@@ -1,4 +1,11 @@
 /target
 .env
+.env.*
 *.log
+
 .DS_Store
+
+.vscode/
+.idea/
+
+sqlx-data.json
