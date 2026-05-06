@@ -30,10 +30,12 @@ pub async fn start_mqtt_ingest() -> anyhow::Result<()> {
             println!("topic: {}", topic);
             println!("payload: {}", safe_payload);
 
+            let device_id = extract_device_id(&topic);
+
             let security_event = SecurityEvent {
                 event_id: Uuid::new_v4(),
                 timestamp: Utc::now(),
-                device_id: "device-1".to_string(),
+                device_id: device_id.clone(),
                 topic: topic.clone(),
                 event_type: EventType::MqttPublish,
                 severity: Severity::Low,
@@ -41,10 +43,10 @@ pub async fn start_mqtt_ingest() -> anyhow::Result<()> {
             };
 
             let policy = DevicePolicy {
-                device_id: "device-1".to_string(),
+                device_id: device_id.clone(),
                 allowed_topics: vec![
-                    "devices/device-1/".to_string(),
-                    "telemetry/device-1/".to_string(),
+                    format!("devices/{}/", device_id),
+                    format!("telemetry/{}/", device_id),
                     "mesh/provisioning/".to_string(),
                     "edge/provisioning/".to_string(),
                 ],
@@ -73,4 +75,14 @@ fn sanitize_payload(topic: &str, payload: &str) -> String {
     } else {
         payload.to_string()
     }
+}
+
+fn extract_device_id(topic: &str) -> String {
+    let parts: Vec<&str> = topic.split('/').collect();
+
+    if parts.len() >= 2 && (parts[0] == "devices" || parts[0] == "telemetry") {
+        return parts[1].to_string();
+    }
+
+    "unknown".to_string()
 }
