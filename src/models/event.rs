@@ -2,7 +2,7 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SecurityEvent {
     pub event_id: Uuid,
     pub timestamp: DateTime<Utc>,
@@ -13,15 +13,15 @@ pub struct SecurityEvent {
     pub source: String,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum EventType {
     UnauthorizedPublish,
     AuthFailed,
     ReplaySuspected,
-    RougeProvisioning,
+    RogueProvisioning,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum Severity {
     Low,
     Medium,

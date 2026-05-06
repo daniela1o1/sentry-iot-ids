@@ -1,9 +1,10 @@
+mod detection;
 mod models;
-mod rules;
 
 use chrono::Utc;
+use detection::engine::run_detection;
+use models::device::{DevicePolicy, DeviceState};
 use models::event::{EventType, SecurityEvent, Severity};
-use models::policy::DevicePolicy;
 use uuid::Uuid;
 
 fn main() {
@@ -20,13 +21,16 @@ fn main() {
     let policy = DevicePolicy {
         device_id: "device-1".to_string(),
         allowed_topics: vec![
-            "devices/device-1/".to_string(),
+            "device/device-1/".to_string(),
             "telemetry/device-1/".to_string(),
         ],
+        state: DeviceState::Trusted,
     };
 
-    if let Some(detection) = rules::mqtt_topic::detect_unauthorized_publish(&event, &policy) {
-        println!("DETECTION:");
-        println!("{:#?}", detection);
+    let alerts = run_detection(&event, &policy);
+
+    for alert in alerts {
+        println!("ALERT:");
+        println!("{:#?}", alert);
     }
 }
