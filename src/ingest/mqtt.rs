@@ -1,19 +1,21 @@
 use chrono::Utc;
 use uuid::Uuid;
 
+use crate::database::alerts::save_alert;
 use crate::detection::engine::run_detection;
 use crate::models::device::{DevicePolicy, DeviceState};
 use crate::models::event::{EventType, SecurityEvent, Severity};
 use rumqttc::{AsyncClient, Event, Incoming, MqttOptions, QoS};
+use sqlx::PgPool;
 use std::time::Duration;
 
-pub async fn start_mqtt_ingest() -> anyhow::Result<()> {
+pub async fn start_mqtt_ingest(pool: PgPool) -> anyhow::Result<()> {
     let mut mqtt_options = MqttOptions::new("sentry-ids", "localhost", 1883);
     mqtt_options.set_keep_alive(Duration::from_secs(5));
 
     let (client, mut eventloop) = AsyncClient::new(mqtt_options, 10);
 
-    client.subscribe("#", QoS::AtMostOnce).await?;
+    client.subscribe("#", QoS::AtLeastOnce).await?; //QoS 1, just for not missing out on something
 
     println!("Sentry MQTT ingest started. Listening on topics...");
 
@@ -58,13 +60,15 @@ pub async fn start_mqtt_ingest() -> anyhow::Result<()> {
             for alert in alerts {
                 println!("ALERT:");
                 println!("{:#?}", alert);
+
+                save_alert(&pool, &alert).await?;
             }
         }
     }
 }
 
 fn sanitize_payload(topic: &str, payload: &str) -> String {
-    let topic_lower = topic.to_lowercase();
+    let topic_lower = topic.to_lowercase(); // normalizing input for stable detection logic
 
     if topic_lower.contains("hmac") {
         "[sensitive:hmac omitted]".to_string()
