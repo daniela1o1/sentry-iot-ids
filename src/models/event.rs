@@ -15,6 +15,7 @@ pub struct SecurityEvent {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum EventType {
+    MqttPublish,
     UnauthorizedPublish,
     AuthFailed,
     ReplaySuspected,
