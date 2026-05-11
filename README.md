@@ -128,16 +128,18 @@ curl localhost:3000/alerts
 ![SystemArchitecture](images/Architecture.png)
 
 ```text
-MQTT Devices
-      ↓
-Mosquitto Broker
-      ↓
-Sentry Ingest Layer
-      ↓
+MQTT Devices / Simulators
+↓
+Mosquitto MQTT Broker
+↓
+Sentry MQTT Ingest Layer
+↓
+Security Event Normalization
+↓
 Detection Engine
-      ↓
-PostgreSQL
-      ↓
+↓
+PostgreSQL Persistence
+↓
 Axum REST API
 ```
 
