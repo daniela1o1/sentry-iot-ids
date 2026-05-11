@@ -145,6 +145,10 @@ Axum REST API
 
 ---
 
+# EventFlow Overview
+
+![Event-Pipeline](images/EventFlow.png)
+
 # Project Goals
 
 The goal of Sentry is to explore:
