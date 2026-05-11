@@ -18,7 +18,7 @@ async fn main() -> anyhow::Result<()> {
 
     println!("Connected to PostgreSQL");
 
-    let app = create_router();
+    let app = create_router(pool.clone());
 
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await?;
 

@@ -1,20 +1,12 @@
-use axum::Json;
-use serde::Serialize;
+use axum::{Json, extract::State, http::StatusCode};
 use sqlx::PgPool;
 
-#[derive(Serialize)]
-pub struct AlertResponse {
-    pub device_id: String,
-    pub rule_name: String,
-    pub severity: String,
-    pub reason: String,
-}
+use crate::database::alerts::{AlertRow, get_alerts as db_get_alerts};
 
-pub async fn get_alerts() -> Json<Vec<AlertResponse>> {
-    Json(vec![AlertResponse {
-        device_id: "device-1".to_string(),
-        rule_name: "unauthorized_topic_publish".to_string(),
-        severity: "High".to_string(),
-        reason: "demo alert".to_string(),
-    }])
+pub async fn get_alerts(State(pool): State<PgPool>) -> Result<Json<Vec<AlertRow>>, StatusCode> {
+    let alerts = db_get_alerts(&pool)
+        .await
+        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+
+    Ok(Json(alerts))
 }
