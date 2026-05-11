@@ -125,6 +125,8 @@ curl localhost:3000/alerts
 
 # Architecture Overview
 
+![SystemArchitecture](images/Architecture.png)
+
 ```text
 MQTT Devices
       ↓
