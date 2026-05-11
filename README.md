@@ -160,7 +160,7 @@ The goal of Sentry is to explore:
 - [x] Topic-based detection
 - [x] Alert persistence
 - [x] REST API foundation
-- [ ] Live database-backed `/alerts`
+- [x] Live database-backed `/alerts`
 - [ ] Device management
 - [ ] Policy management
 - [ ] Response/quarantine actions
